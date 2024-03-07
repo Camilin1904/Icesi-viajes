@@ -1,18 +1,14 @@
 package co.edu.icesi.viajes.icesiviajes.service;
 import co.edu.icesi.viajes.icesiviajes.domain.TipoDestino;
 import org.junit.jupiter.api.Test;
-import org.postgresql.gss.GSSOutputStream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.nio.channels.NotYetConnectedException;
-import java.security.spec.ECField;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 public class TipoDestinoTest {
@@ -58,7 +54,7 @@ public class TipoDestinoTest {
         setUp();
         boolean[] res = new boolean[10];
         for(int i=0; i<res.length; i++){
-            res[i] = tipoDestinoService.findByID((long)12*i).get().getIdTide()==t[i].getIdTide();
+            res[i] = Objects.equals(tipoDestinoService.findByID((long) 12 * i).get().getIdTide(), t[i].getIdTide());
         }
         dismantle();
         for(boolean n : res) assert n;
@@ -75,7 +71,7 @@ public class TipoDestinoTest {
         t1.setNombre("ma cago en todo");
         t1.setUsuCreador("o");
         tipoDestinoService.save(t1);
-        boolean res = tipoDestinoService.findByID((long)55).get().getIdTide()==t1.getIdTide();
+        boolean res = Objects.equals(tipoDestinoService.findByID((long) 55).get().getIdTide(), t1.getIdTide());
         tipoDestinoService.delete(t1);
         assert res;
     }
@@ -121,6 +117,29 @@ public class TipoDestinoTest {
         dismantle();
     }
 
+    @Test
+    void debeRetornarListaTipoDestinoPorCodigo() throws Exception{
+        List<TipoDestino> lstTipoDestino = tipoDestinoService.findByCodigo("PLAYA");
+        for(TipoDestino n: lstTipoDestino){
+            System.out.println(n.getCodigo() + " - " + n.getNombre());
+        }
+    }
+
+    @Test
+    void debeRetornarListaTipoDestinoPorCodigoYEstado() throws Exception{
+        List<TipoDestino> lstTipoDestino = tipoDestinoService.findByCodigoAndEstadoIgnoreCase("PLAYA","A");
+        for(TipoDestino n: lstTipoDestino){
+            System.out.println(n.getCodigo() + " - " + n.getNombre());
+        }
+    }
+
+    @Test
+    void debeRetornarTipoDestinoPopulares(){
+        List<Object[]> lstTipoDestino = tipoDestinoService.orderByPopularity();
+        for(Object[] n: lstTipoDestino){
+            System.out.println(n[0].toString() + " - " + n[1].toString());
+        }
+    }
 
 
 }

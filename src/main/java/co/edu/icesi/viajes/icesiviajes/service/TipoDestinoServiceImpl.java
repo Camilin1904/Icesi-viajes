@@ -19,9 +19,7 @@ public class TipoDestinoServiceImpl implements TipoDestinoService{
     @Override
     public List<TipoDestino> findAll() {
 
-        List<TipoDestino> lstTipoDestino = tipoDestinoRepository.findAll();
-
-        return lstTipoDestino;
+        return tipoDestinoRepository.findAll();
     }
 
     @Override
@@ -31,30 +29,64 @@ public class TipoDestinoServiceImpl implements TipoDestinoService{
 
     @Override
     public TipoDestino save(TipoDestino entity) throws Exception {
+        if(findByID(entity.getIdTide()).isPresent()){
+            throw new Exception("Element already exists");
+        }
         return tipoDestinoRepository.save(entity);
     }
 
     @Override
     public TipoDestino update(TipoDestino entity) throws Exception {
+        if(findByID(entity.getIdTide()).isEmpty()){
+            throw new Exception("Element does not exists");
+        }
         return tipoDestinoRepository.save(entity);
     }
 
     @Override
     public void delete(TipoDestino entity) throws Exception {
+        if(findByID(entity.getIdTide()).isEmpty()){
+            throw new Exception("Element does not exists");
+        }
         tipoDestinoRepository.delete(entity);
     }
 
     @Override
     public void deleteById(Long id) throws Exception {
+        if(findByID(id).isEmpty()){
+            throw new Exception("Element does not exists");
+        }
         tipoDestinoRepository.deleteById(id);
     }
 
     @Override
     public void validate(TipoDestino entity) throws Exception {
+
     }
 
     @Override
     public long count() {
         return tipoDestinoRepository.count();
+    }
+
+    @Override
+    public List<TipoDestino> findByCodigo(String codigo) throws Exception{
+        if(codigo == null){
+            throw new Exception("Invalid field");
+        }
+        return tipoDestinoRepository.findByCodigo(codigo);
+    }
+
+    @Override
+    public List<TipoDestino> findByCodigoAndEstadoIgnoreCase(String codigo, String estado) throws Exception{
+        if(codigo == null || estado == null){
+            throw new Exception("Invalid field");
+        }
+        return tipoDestinoRepository.findByCodigoAndEstadoIgnoreCase(codigo,estado);
+    }
+
+    @Override
+    public List<Object[]> orderByPopularity(){
+        return tipoDestinoRepository.orderByPopularity();
     }
 }
